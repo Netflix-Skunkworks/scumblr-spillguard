@@ -1,0 +1,28 @@
+{
+  "name": "scumblr-spillguard",
+  "version": "1.0.0",
+  "description": "A github webhook for Scumblr",
+  "main": "index.js",
+  "scripts": {
+    "test": "python test.py"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Netflix-Skunkworks/scumblr-spillguard.git"
+  },
+  "keywords": [
+    "python",
+    "aws",
+    "lambda",
+    "serverless"
+  ],
+  "author": "kevgliss",
+  "license": "Apache",
+  "bugs": {
+    "url": "https://github.com/Netflix-Skunkworks/scumblr-spillguard/issues"
+  },
+  "homepage": "https://github.com/Netflix-Skunkworks/scumblr-spillguard#readme",
+  "dependencies": {
+    "serverless-python-requirements": "^2.2.1"
+  }
+}
