@@ -150,12 +150,16 @@ def check_authorization(body, sig, source_ip):
 
 def find_violations(file, terms):
     """Find any violations in a given file."""
-    contents_url = file["contents_url"]
-    log.debug("Grabbing content {}".format(contents_url))
+    sha = file["sha"]
 
-    contents = github_request(contents_url)
+    # TODO this is highly brittle
+    org, repo = file["blob_url"].split('/')[3:5]
+
+    blob_url = "https://api.github.com/repos/{org}/{repo}/git/blobs/{sha}".format(sha=sha, org=org, repo=repo)
+    log.debug("Grabbing content {}".format(blob_url))
+    contents = github_request(blob_url)
+
     hits = []
-
     for name, pattern in terms.items():
         file_content = base64.b64decode(contents["content"]).decode('utf-8')
 
@@ -168,7 +172,7 @@ def find_violations(file, terms):
             hits.append(name)
 
         else:
-            log.debug("No hit on pattern {} for content {}".format(pattern, contents_url))
+            log.debug("No hit on pattern {} for content {}".format(pattern, blob_url))
 
     return hits
 

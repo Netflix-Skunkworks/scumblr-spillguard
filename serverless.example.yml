@@ -1,0 +1,30 @@
+service: scumbler-spillguard
+
+provider:
+  name: aws
+  runtime: python3.6
+  memorySize: 512
+  timeout: 300
+  awsKmsKeyArn: <YOUR-KMS-KEY-HERE>
+
+functions:
+  githubWebhookListener:
+    events:
+      - http:
+          path: github
+          method: post
+    handler: handler.github
+    description: Forwards matching events to Scumblr
+    vpc:
+      securityGroupIds:
+        - <YOUR-SECURITY-GROUP-ID-HERE>
+      subnetIds:
+        - <YOUR-SUBNET-IDS-HERE>
+    environment:
+      ENCRYPTED_GITHUB_TOKEN: <YOUR-KMS-ENCRYPTED-GITHUB-OAUTH-TOKEN-HERE>
+      ENCRYPTED_SCUMBLR_KEY: <YOUR-KMS-ENCRYPTED-SCUMBLR-CLIENT-KEY-HERE>
+      ENCRYPTED_WEBHOOK_SECRET: <YOUR-KMS-ENCRYPTED-GITHUB-WEBHOOK-HERE>
+      SCUMBLR_URL: <YOUR-SCUMBLR-URL-HERE>
+
+plugins:
+  - serverless-python-requirements
