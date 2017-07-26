@@ -170,6 +170,7 @@ ENV/
 .requirements
 
 *.test.yml
+serverless.yml
 
 
 ### VisualStudioCode ###
