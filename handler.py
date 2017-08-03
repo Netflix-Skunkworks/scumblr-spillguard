@@ -13,6 +13,8 @@ from contextlib import contextmanager
 import boto3
 import requests
 from retrying import retry
+from raven_python_lambda import RavenLambdaWrapper
+
 
 logging.basicConfig()
 log = logging.getLogger("ScumblrSpillGuard")
@@ -222,6 +224,7 @@ def validate_event(event):
     raise GeneralFailure("Invalid event. Event: {}".format(event))
 
 
+@RavenLambdaWrapper()
 def github(event, context):
     log.debug("Entering lambda handler with event: {}".format(json.dumps(event, indent=2)))
 
