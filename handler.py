@@ -163,7 +163,7 @@ def find_violations(file, terms):
 
     hits = []
     for name, pattern in terms.items():
-        file_content = base64.b64decode(contents["content"]).decode('utf-8')
+        file_content = base64.b64decode(contents["content"]).decode('utf-8', 'ignore')
 
         log.debug("Checking pattern {} '{}' against contents: {}".format(name, pattern, file_content))
 
