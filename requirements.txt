@@ -1,3 +1,0 @@
-requests==2.11.1
-retrying
-raven_python_lambda

@@ -13,7 +13,7 @@ functions:
       - http:
           path: github
           method: post
-    handler: handler.github
+    handler: scumblr_spillguard.handler.github
     description: Forwards matching events to Scumblr
     vpc:
       securityGroupIds:
