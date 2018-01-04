@@ -17,7 +17,7 @@ ROOT = os.path.realpath(os.path.join(os.path.dirname(__file__)))
 sys.path.insert(0, ROOT)
 
 about = {}
-with open(os.path.join(ROOT, "scumbler_spillguard", "__about__.py")) as f:
+with open(os.path.join(ROOT, "scumblr_spillguard", "__about__.py")) as f:
     exec(f.read(), about)
 
 
