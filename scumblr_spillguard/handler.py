@@ -20,6 +20,7 @@ logging.basicConfig()
 log = logging.getLogger("ScumblrSpillGuard")
 log.setLevel(logging.INFO)
 SCUMBLR_URL = os.environ["SCUMBLR_URL"]
+SCUMBLR_CLIENT_PATH = os.environ.get("SCUMBLR_CLIENT_PATH", "SCUMBLR_CLIENT.cert")
 
 GITHUB_CIDR_WHITELIST = ["192.30.252.0/22", "185.199.108.0/22"]
 
@@ -102,11 +103,11 @@ def scumblr_request(url, data=None):
         if data:
             data = json.dumps(data)
             response = requests.post(SCUMBLR_URL + url, cert=(
-                os.path.join(CWD, 'SCUMBLR_CLIENT.cert'),
+                os.path.join(CWD, SCUMBLR_CLIENT_PATH),
                 tmpfile), data=data)
         else:
             response = requests.get(SCUMBLR_URL + url, cert=(
-                os.path.join(CWD, 'SCUMBLR_CLIENT.cert'),
+                os.path.join(CWD, SCUMBLR_CLIENT_PATH),
                 tmpfile))
 
     log.debug("Status Code: {}".format(response.status_code))
