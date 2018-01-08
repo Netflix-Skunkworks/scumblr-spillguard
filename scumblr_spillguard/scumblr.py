@@ -8,7 +8,7 @@ from scumblr_spillguard.secrets import get_secret
 from scumblr_spillguard.exceptions import GeneralFailure
 
 SCUMBLR_URL = os.environ["SCUMBLR_URL"]
-SCUMBLR_CLIENT_PATH = os.environ.get("SCUMBLR_CLIENT_PATH", "SCUMBLR_CLIENT.cert")
+SCUMBLR_CLIENT_PATH = os.environ["SCUMBLR_CLIENT_PATH"]
 
 CWD = os.path.dirname(os.path.realpath(__file__))
 

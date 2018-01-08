@@ -35,8 +35,7 @@ GITHUB_APIGATEWAY_EVENT = {
     },
     'requestContext': {
         'identity': {
-            'sourceIp': '192.30.252.3',
-            'userAgent': 'GitHub-Hookshot',
+            'sourceIp': '192.30.252.3'
         }
     },
     'body': {
@@ -61,4 +60,3 @@ GITHUB_COMMIT_RESPONSE = {
         }
     ]
 }
-

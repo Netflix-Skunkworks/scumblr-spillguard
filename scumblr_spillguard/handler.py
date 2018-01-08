@@ -56,7 +56,7 @@ def process_task_configs(commits, configs):
 
 
 @RavenLambdaWrapper()
-def github(event, context):
+def github_handler(event, context):
     """
     Handles the processing of Github commit events.
 
