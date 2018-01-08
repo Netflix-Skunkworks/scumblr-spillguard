@@ -27,7 +27,10 @@ install_requires = [
     'raven_python_lambda'
 ]
 
-tests_require = []
+tests_require = [
+    'pytest',
+    'responses'
+]
 
 
 setup(
