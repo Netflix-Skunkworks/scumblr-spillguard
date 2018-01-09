@@ -10,13 +10,14 @@ from scumblr_spillguard import scumblr, github
 def find_violations(contents, terms):
     """Find any violations in a given file."""
     hits = []
-    for name, pattern in terms.items():
-        try:
-            file_content = base64.b64decode(contents["content"]).decode('utf-8', 'ignore')
-        except Exception as e:
-            log.exception(e)
-            continue
 
+    try:
+        file_content = base64.b64decode(contents["content"]).decode('utf-8', 'ignore')
+    except Exception as e:
+        log.exception(e)
+        return hits
+
+    for name, pattern in terms.items():
         log.debug("Checking pattern {} '{}' against contents: {}".format(name, pattern, file_content))
 
         match = re.search(pattern, file_content, flags=re.MULTILINE | re.DOTALL)
