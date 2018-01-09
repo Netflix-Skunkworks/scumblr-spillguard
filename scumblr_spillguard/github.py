@@ -57,9 +57,7 @@ def request(url):
     """Attempt to make a Github request."""
     params = {'access_token': get_secret('ENCRYPTED_GITHUB_TOKEN')}
 
-    log.info('Checking url {}'.format(url))
-
-    log.info('Github Request. Url: {}'.format(url))
+    log.debug('Github Request. Url: {}'.format(url))
 
     response = requests.get(url, params=params)
 
