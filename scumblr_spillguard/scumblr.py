@@ -60,7 +60,7 @@ def request(url, data=None):
 
     log.debug("Scumblr Response. Status: {0} Data: {1}".format(
         response.status_code,
-        response.json(indent=2)
+        json.dumps(response.json(), indent=2)
     ))
 
     return response.json()
