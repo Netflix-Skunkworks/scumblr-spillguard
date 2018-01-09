@@ -58,16 +58,21 @@ def request(url):
 
     log.info('Checking url {}'.format(url))
 
+    log.info('Github Request. Url: {}'.format(url))
+
     response = requests.get(url, params=params)
 
     if not response.ok:
         raise GeneralFailure('Request to Github failed. URL: {0}'.format(url))
 
-    log.info('Github response: {}'.format(response.json()))
-
     if response.headers['X-RateLimit-Remaining'] == 0:
         log.info('Throttled by Github. X-RateLimit-Limit: {0}'.format(
             response.headers['X-RateLimit-Limit']))
         raise ThrottledError()
+
+    log.debug("Github Response. Status: {0} Data: {1}".format(
+        response.status_code,
+        response.json(indent=2)
+    ))
 
     return response.json()

@@ -37,6 +37,10 @@ def process_task_configs(commit, configs):
             'findings': []
         }
 
+        log.info('Working on config. Config: {0}'.format(
+            json.dumps(config, indent=2)
+        ))
+
         hits = find_violations(commit, config['options']['github_terms'])  # todo 'github_terms' should be generic 'terms'
 
         if hits:
@@ -47,8 +51,6 @@ def process_task_configs(commit, configs):
                     'contents_url': commit['contentsUrl']
                 }
             )
-
-        log.debug('Results: {}'.format(json.dumps(result, indent=2)))
 
         if result['findings']:
             scumblr.send_results(result)

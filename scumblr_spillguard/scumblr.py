@@ -30,25 +30,27 @@ def send_results(results):
 # TODO add retry logic here too?
 def request(url, data=None):
     """Attempt to make a scumblr request."""
-    log.info("Making a request to Scumblr. URL: {0} Data: {1}".format(
-        url, data
-    ))
-
     with mktempfile() as tmpfile:
         with open(tmpfile, 'w') as f:
             f.write(get_secret("ENCRYPTED_SCUMBLR_KEY").decode('utf-8'))
 
         if data:
-            data = json.dumps(data)
+            data = json.dumps(data, indent=2)
+            log.debug("Scumblr Request. URL: {0} Data: {1}".format(
+                url,
+                data
+            ))
+
             response = requests.post(SCUMBLR_URL + url, cert=(
                 SCUMBLR_CLIENT_PATH,
                 tmpfile), data=data)
         else:
+            log.debug("Scumblr Request. URL: {0}".format(
+                url
+            ))
             response = requests.get(SCUMBLR_URL + url, cert=(
                 SCUMBLR_CLIENT_PATH,
                 tmpfile))
-
-    log.debug("Status Code: {}".format(response.status_code))
 
     if not response.ok:
         log.debug(response.content)
@@ -56,6 +58,10 @@ def request(url, data=None):
             url, data
         ))
 
-    if not data:
-        return response.json()
+    log.debug("Scumblr Response. Status: {0} Data: {1}".format(
+        response.status_code,
+        response.json(indent=2)
+    ))
+
+    return response.json()
 
