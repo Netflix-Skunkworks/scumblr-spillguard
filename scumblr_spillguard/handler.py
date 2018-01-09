@@ -11,7 +11,11 @@ def find_violations(contents, terms):
     """Find any violations in a given file."""
     hits = []
     for name, pattern in terms.items():
-        file_content = base64.b64decode(contents["content"]).decode('utf-8', 'ignore')
+        try:
+            file_content = base64.b64decode(contents["content"]).decode('utf-8', 'ignore')
+        except Exception as e:
+            log.exception(e)
+            continue
 
         log.debug("Checking pattern {} '{}' against contents: {}".format(name, pattern, file_content))
 
