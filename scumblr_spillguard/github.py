@@ -1,4 +1,3 @@
-import json
 import hmac
 import hashlib
 import requests
@@ -47,9 +46,9 @@ def authorize(body, headers, source_ip):
     )
 
     if not hmac.compare_digest(signature, message_hmac.hexdigest()):
-        raise AuthorizationError('Computed HMAC {} does not match passed signature {}'.format(message_hmac.hexdigest(), signature))
+        raise AuthorizationError('Computed HMAC {} does not match signature {}'.format(message_hmac.hexdigest(), signature))
 
-    log.debug('Computed HMAC {} does MATCHES passed signature {}'.format(message_hmac.hexdigest(), signature))
+    log.debug('Computed HMAC {} matches signature {}'.format(message_hmac.hexdigest(), signature))
 
 
 @retry(retry_on_exception=github_thottled, wait_random_min=1000, wait_random_max=10000)

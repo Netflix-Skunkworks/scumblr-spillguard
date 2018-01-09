@@ -7,10 +7,10 @@ from scumblr_spillguard.utils import mktempfile
 from scumblr_spillguard.secrets import get_secret
 from scumblr_spillguard.exceptions import GeneralFailure
 
-SCUMBLR_URL = os.environ["SCUMBLR_URL"]
-SCUMBLR_CLIENT_PATH = os.environ["SCUMBLR_CLIENT_PATH"]
+CWD = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
-CWD = os.path.dirname(os.path.realpath(__file__))
+SCUMBLR_URL = os.environ["SCUMBLR_URL"]
+SCUMBLR_CLIENT_PATH = os.path.join(CWD, os.environ["SCUMBLR_CLIENT_PATH"])
 
 
 def get_config(name):
@@ -36,16 +36,16 @@ def request(url, data=None):
 
     with mktempfile() as tmpfile:
         with open(tmpfile, 'w') as f:
-            f.write(get_secret("SCUMBLR_KEY").decode('utf-8'))
+            f.write(get_secret("ENCRYPTED_SCUMBLR_KEY").decode('utf-8'))
 
         if data:
             data = json.dumps(data)
             response = requests.post(SCUMBLR_URL + url, cert=(
-                os.path.join(CWD, SCUMBLR_CLIENT_PATH),
+                SCUMBLR_CLIENT_PATH,
                 tmpfile), data=data)
         else:
             response = requests.get(SCUMBLR_URL + url, cert=(
-                os.path.join(CWD, SCUMBLR_CLIENT_PATH),
+                SCUMBLR_CLIENT_PATH,
                 tmpfile))
 
     log.debug("Status Code: {}".format(response.status_code))
