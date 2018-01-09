@@ -83,9 +83,9 @@ def github_handler(event, context):
     log.debug('Body contains {} commits'.format(len(body['commits'])))
 
     for c in body['commits']:
-        commit_data = github.request(commit_url + c['id'])
+        commit_data = github.request(commit_url + '/' + c['id'])
         for f in commit_data['files']:
-            commit_data['content'] = github.request(blobs_url + f['sha'])['content']
+            commit_data['content'] = github.request(blobs_url + '/' + f['sha'])['content']
             process_task_configs(commit_data, config)
 
     return {'statusCode': '200', 'body': '{}'}
