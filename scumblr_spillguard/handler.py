@@ -11,16 +11,10 @@ def find_violations(contents, terms):
     """Find any violations in a given file."""
     hits = []
 
-    try:
-        file_content = base64.b64decode(contents["content"]).decode('utf-8', 'ignore')
-    except Exception as e:
-        log.exception(e)
-        return hits
-
     for name, pattern in terms.items():
         log.debug("Checking pattern {} '{}' against contents: {}".format(name, pattern, file_content))
 
-        match = re.search(pattern, file_content, flags=re.MULTILINE | re.DOTALL)
+        match = re.search(pattern, contents, flags=re.MULTILINE | re.DOTALL)
 
         if match:
             log.debug("Contents hit on pattern {}".format(pattern))
@@ -46,7 +40,7 @@ def process_task_configs(commit, configs):
             json.dumps(config, indent=2)
         ))
 
-        hits = find_violations(commit, config['options']['github_terms'])  # todo 'github_terms' should be generic 'terms'
+        hits = find_violations(commit['contents'], config['options']['github_terms'])  # todo 'github_terms' should be generic 'terms'
 
         if hits:
             result['findings'].append(
@@ -60,9 +54,10 @@ def process_task_configs(commit, configs):
         if result['findings']:
             scumblr.send_results(result)
 
-        log.info('Finished working on config. Config: {0} Result: {1}'.format(
+        log.info('Finished working on config. Config: {0} Result: {1}, Commit: {2}'.format(
             json.dumps(config, indent=2),
-            json.dumps(result, indent=2)
+            json.dumps(result, indent=2),
+            json.dumps(commit, indent=3)
         ))
 
 
@@ -96,8 +91,15 @@ def github_handler(event, context):
 
     for c in body['commits']:
         commit_data = github.request(commit_url + '/' + c['id'])
+
         for f in commit_data['files']:
-            commit_data['content'] = github.request(blobs_url + '/' + f['sha'])['content']
+            data = github.request(blobs_url + '/' + f['sha'])['content']
+            try:
+                commit_data['contents'] = base64.b64decode(data).decode('utf-8', 'ignore')
+            except Exception as e:
+                log.exception(e)
+                continue
+
             process_task_configs(commit_data, config)
 
     return {'statusCode': '200', 'body': '{}'}
