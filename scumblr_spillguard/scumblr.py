@@ -10,7 +10,7 @@ from scumblr_spillguard.exceptions import GeneralFailure
 CWD = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
 SCUMBLR_URL = os.environ["SCUMBLR_URL"]
-SCUMBLR_CLIENT_PATH = os.path.join(CWD, os.environ["SCUMBLR_CLIENT_PATH"])
+SCUMBLR_CLIENT_PATH = os.path.join(CWD, os.environ.get("SCUMBLR_CLIENT_PATH", "SCUMBLR_CLIENT.cert"))
 
 
 def get_config(name):
@@ -21,10 +21,10 @@ def get_config(name):
         ))
 
 
-def send_results(task_id, results):
+def send_results(results):
     """Send analysis results back to scumblr."""
     return request(
-        '/tasks/{task_id}/run'.format(task_id=task_id), data=results)
+        '/tasks/{task_id}/run'.format(task_id=results['task_id']), data=results)
 
 
 # TODO add retry logic here too?

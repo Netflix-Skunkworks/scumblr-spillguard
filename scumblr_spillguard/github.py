@@ -18,6 +18,16 @@ def github_thottled(exception):
     return isinstance(exception, ThrottledError)
 
 
+def api_call(org, repo, sha, api):
+    url = 'https://api.github.com/repos/{org}/{repo}/git/{api}/{sha}'.format(
+        org=org,
+        repo=repo,
+        sha=sha,
+        api=api
+    )
+    return request(url)
+
+
 def validate(event):
     """Ensure the incoming event is a github event."""
     authorize(event['body'], event['headers'], event['requestContext']['identity']['sourceIp'])
@@ -54,7 +64,7 @@ def authorize(body, headers, source_ip):
 @retry(retry_on_exception=github_thottled, wait_random_min=1000, wait_random_max=10000)
 def request(url):
     """Attempt to make a Github request."""
-    params = {'access_token': get_secret('GITHUB_OAUTH_TOKEN')}
+    params = {'access_token': get_secret('ENCRYPTED_GITHUB_TOKEN')}
 
     log.info('Checking url {}'.format(url))
 
