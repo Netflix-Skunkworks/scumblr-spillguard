@@ -60,6 +60,11 @@ def process_task_configs(commit, configs):
         if result['findings']:
             scumblr.send_results(result)
 
+        log.info('Finished working on config. Config: {0} Result: {1}'.format(
+            json.dumps(config, indent=2),
+            json.dumps(result, indent=2)
+        ))
+
 
 @RavenLambdaWrapper()
 def github_handler(event, context):
