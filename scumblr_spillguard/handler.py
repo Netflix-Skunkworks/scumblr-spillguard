@@ -75,20 +75,17 @@ def github_handler(event, context):
     body = json.loads(event['body'])
 
     commit_url = body['repository']['commits_url'][:-len('{/sha}')]
+    blobs_url = body['repository']['blobs_url'][:-len('{/sha}')]
 
     # get search terms from scumblr
     config = scumblr.get_config('GithubEventAnalyzer')
 
     log.debug('Body contains {} commits'.format(len(body['commits'])))
-    org, repo = commit_url['blob_url'].split('/')[3:5]
 
     for c in body['commits']:
-        sha = c['id']
-
-        commit_data = github.api_call(org, repo, sha, 'commits')
+        commit_data = github.request(commit_url + c['id'])
         for f in commit_data['files']:
-            sha = f['sha']
-            commit_data['content'] = github.api_call(org, repo, sha, 'blobs')['content']
+            commit_data['content'] = github.request(blobs_url + f['sha'])['content']
             process_task_configs(commit_data, config)
 
     return {'statusCode': '200', 'body': '{}'}

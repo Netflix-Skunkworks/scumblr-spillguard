@@ -18,16 +18,6 @@ def github_thottled(exception):
     return isinstance(exception, ThrottledError)
 
 
-def api_call(org, repo, sha, api):
-    url = 'https://api.github.com/repos/{org}/{repo}/git/{api}/{sha}'.format(
-        org=org,
-        repo=repo,
-        sha=sha,
-        api=api
-    )
-    return request(url)
-
-
 def validate(event):
     """Ensure the incoming event is a github event."""
     authorize(event['body'], event['headers'], event['requestContext']['identity']['sourceIp'])
