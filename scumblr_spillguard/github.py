@@ -42,7 +42,7 @@ def authorize(body, headers, source_ip):
 
     message_hmac = hmac.new(
         get_secret('ENCRYPTED_WEBHOOK_SECRET'),
-        json.dumps(body).encode('utf-8'),
+        body.encode('utf-8'),
         hashlib.sha1
     )
 
