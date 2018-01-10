@@ -54,7 +54,7 @@ def process_task_configs(commit, configs):
         if result['findings']:
             scumblr.send_results(result)
 
-        log.info('Finished working on config. Config: {0} Result: {1}, Commit: {2}'.format(
+        log.info('Finished working on config. Result: {1}, Commit: {2}'.format(
             json.dumps(config, indent=2),
             json.dumps(result, indent=2),
             json.dumps(commit, indent=3)
