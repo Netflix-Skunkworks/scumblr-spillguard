@@ -84,8 +84,10 @@ def process_task_configs(commit, configs):
             'findings': [],
             'commit': {
                 "ref": commit['ref'],
-                "head_commit": {'committer': commit['committer']},
-                "repository": {'html_url': commit['html_url']}
+                'head_commit': {
+                    'committer': commit['committer']
+                },
+                'repository': {'html_url': commit['html_url']}
             }
         }
 
@@ -157,6 +159,7 @@ def github_handler(event, context):
             try:
                 commit_data['contents'] = base64.b64decode(data).decode('utf-8', 'ignore')
                 commit_data['contents_url'] = f['contents_url']
+                commit_data['committer'] = body['committer']
                 commit_data['ref'] = body['ref']
                 commit_data['html_url'] = body['repository']['html_url']
             except Exception as e:
