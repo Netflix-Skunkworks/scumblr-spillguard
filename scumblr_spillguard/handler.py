@@ -27,7 +27,55 @@ def find_violations(contents, terms):
 
 
 def process_task_configs(commit, configs):
-    """Iterates over all items in config analyzing each."""
+    """Iterates over all items in config analyzing each.
+
+    Scumblr expects the following format::
+
+    {
+      "task_id": 105,
+      "config": {
+        "id": 105,
+        "task_type": "ScumblrTask::GithubEventAnalyzer",
+        "options": {
+          "severity": "high",
+          "github_terms": {
+            "exec": "ProcessUtil.getRuntime().exec",
+            "exec1": "Runtime.getRuntime().exec",
+            "slack token": "xoxb",
+            "slack token1": "xoxp-"
+          }
+        },
+      },
+      "commit": {
+        "ref": "refs/heads/master",
+        "head_commit": {
+          "committer": {
+            "name": "GitHub",
+            "email": "noreply@github.com",
+            "username": "web-flow"
+          }
+        },
+        "repository": {
+          "html_url": "https://github.com/Netflix-Skunkworks/test-gh-spillguard"
+        }
+      },
+      "hits": true,
+      "findings": [
+        {
+          "commit_id": "74ff78c232c8d8516f42c69767d30b5ef37e4041",
+          "findings": [
+            {
+              "content_urls": "https://api.github.com/repos/Netflix-Skunkworks/test-gh-spillguard/contents/test1?ref=74ff78c232c8d8516f42c69767d30b5ef37e4041",
+              "hits": [
+                "slack token"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+
+    """
     for config in configs:
         result = {
             'task_id': config['id'],
