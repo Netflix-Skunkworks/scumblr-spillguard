@@ -159,7 +159,7 @@ def github_handler(event, context):
             try:
                 commit_data['contents'] = base64.b64decode(data).decode('utf-8', 'ignore')
                 commit_data['contents_url'] = f['contents_url']
-                commit_data['committer'] = body['committer']
+                commit_data['committer'] = c['committer']
                 commit_data['ref'] = body['ref']
                 commit_data['html_url'] = body['repository']['html_url']
             except Exception as e:
