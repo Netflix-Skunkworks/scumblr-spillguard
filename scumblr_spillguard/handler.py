@@ -12,7 +12,7 @@ def find_violations(contents, terms):
     hits = []
 
     for name, pattern in terms.items():
-        log.debug("Checking pattern {} '{}' against contents: {}".format(name, pattern, file_content))
+        log.debug("Checking pattern {} '{}' against contents: {}".format(name, pattern, contents))
 
         match = re.search(pattern, contents, flags=re.MULTILINE | re.DOTALL)
 
