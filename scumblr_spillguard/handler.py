@@ -47,7 +47,7 @@ def process_task_configs(commit, configs):
                 {
                     'commit_id': commit['sha'],
                     'hits': hits,
-                    'contents_url': commit['contentsUrl']
+                    'contents_url': commit['contents_url']
                 }
             )
 
@@ -101,6 +101,7 @@ def github_handler(event, context):
             data = github.request(blobs_url + '/' + f['sha'])['content']
             try:
                 commit_data['contents'] = base64.b64decode(data).decode('utf-8', 'ignore')
+                commit_data['contents_url'] = f['contents_url']
             except Exception as e:
                 log.exception(e)
                 continue
