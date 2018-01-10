@@ -80,7 +80,7 @@ def github_handler(event, context):
 
     # github has a very low timeout (10s) we make sure that we can prewarm our function to prevent
     # the service from timing out
-    if event['source'] == 'aws.events':
+    if event.get('source') == 'aws.events':
         return {'statusCode': '200', 'body': '{}'}
 
     github.validate(event)
