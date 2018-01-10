@@ -58,9 +58,8 @@ def request(url, data=None):
             url, data
         ))
 
-    log.debug("Scumblr Response. Status: {0} Data: {1}".format(
+    log.debug("Scumblr Response. Status: {0}".format(
         response.status_code,
-        json.dumps(response.json(), indent=2)
     ))
 
     return response.json()
