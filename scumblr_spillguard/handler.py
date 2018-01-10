@@ -82,7 +82,11 @@ def process_task_configs(commit, configs):
             'task_type': config['task_type'],
             'options': config['options'],
             'findings': [],
-            'commit': commit
+            'commit': {
+                "ref": commit['ref'],
+                "head_commit": {'commiter': commit['head_commit']['committer']},
+                "repository": {'html_url': commit['repository']['html_url']}
+            }
         }
 
         log.info('Working on config. Config: {0}'.format(
