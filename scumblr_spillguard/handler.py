@@ -44,7 +44,7 @@ def process_task_configs(commit, configs):
             "slack token": "xoxb",
             "slack token1": "xoxp-"
           }
-        },
+        }
       },
       "commit": {
         "ref": "refs/heads/master",
