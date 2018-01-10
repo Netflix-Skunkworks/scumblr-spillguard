@@ -62,6 +62,6 @@ def request(url, data=None):
         response.status_code,
     ))
 
-    if data:
+    if not data:
         return response.json()
 
