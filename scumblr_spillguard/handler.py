@@ -33,31 +33,34 @@ def process_task_configs(commit, configs):
             'task_id': config['id'],
             'task_type': config['task_type'],
             'options': config['options'],
-            'findings': []
+            'findings': [],
+            'commit': commit
         }
 
         log.info('Working on config. Config: {0}'.format(
             json.dumps(config, indent=2)
         ))
 
-        hits = find_violations(commit['contents'], config['options']['github_terms'])  # todo 'github_terms' should be generic 'terms'
+        hits = find_violations(commit['contents'],
+                               config['options']['github_terms'])  # todo 'github_terms' should be generic 'terms'
 
         if hits:
             result['findings'].append(
                 {
                     'commit_id': commit['sha'],
-                    'hits': hits,
-                    'contents_url': commit['contents_url']
-                }
+                    'findings': [
+                        {
+                            'hits': hits,
+                            'contents_url': commit['contents_url']
+                        }
+                    ]}
             )
 
         if result['findings']:
             scumblr.send_results(result)
 
-        log.info('Finished working on config. Result: {1}, Commit: {2}'.format(
-            json.dumps(config, indent=2),
+        log.info('Finished working on config. Result: {0}'.format(
             json.dumps(result, indent=2),
-            json.dumps(commit, indent=3)
         ))
 
 
