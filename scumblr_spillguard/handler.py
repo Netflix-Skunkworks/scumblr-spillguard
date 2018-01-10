@@ -78,6 +78,11 @@ def github_handler(event, context):
     """
     log.debug('Entering lambda handler with event: {}'.format(json.dumps(event, indent=2)))
 
+    # github has a very low timeout (10s) we make sure that we can prewarm our function to prevent
+    # the service from timing out
+    if event['source'] == 'serverless-plugin-warmup':
+        return {'statusCode': '200', 'body': '{}'}
+
     github.validate(event)
     body = json.loads(event['body'])
 
