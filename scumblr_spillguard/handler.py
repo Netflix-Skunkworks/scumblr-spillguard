@@ -75,7 +75,11 @@ def process_task_configs(commit, configs):
         result = {
             'task_id': config['id'],
             'task_type': config['task_type'],
-            'config': config,
+            'config': {
+                'id': config['id'],
+                'task_type': config['task_type'],
+                'options': config['options']
+            },
             'findings': [],
             'commit': {
                 "ref": commit['ref'],
