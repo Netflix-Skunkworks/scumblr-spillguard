@@ -100,7 +100,7 @@ def process_task_configs(commit, configs):
                     'findings': [
                         {
                             'hits': hits,
-                            'contents_url': commit['contents_url']
+                            'content_urls': commit['contents_url']
                         }
                     ]}
             )
