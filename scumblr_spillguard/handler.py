@@ -104,7 +104,7 @@ def process_task_configs(commit, configs):
                     'findings': [
                         {
                             'hits': hits,
-                            'content_urls': commit['contents_url']
+                            'content_urls': commit['contents_url'].split('?')[0]
                         }
                     ]}
             )
