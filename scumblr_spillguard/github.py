@@ -69,7 +69,7 @@ def request(url):
             response.headers['X-RateLimit-Limit']))
         raise ThrottledError()
 
-    log.debug("Github Response. Status: {0} Data: {1}".format(
+    log.debug('Github Response. Status: {0} Data: {1}'.format(
         response.status_code,
         json.dumps(response.json(), indent=2)
     ))

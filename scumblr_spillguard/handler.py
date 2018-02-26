@@ -4,7 +4,7 @@ import base64
 from raven_python_lambda import RavenLambdaWrapper
 
 from scumblr_spillguard import log
-from scumblr_spillguard import scumblr, github
+from scumblr_spillguard import scumblr, github, bitbucket
 
 
 def find_violations(contents, terms):
@@ -75,14 +75,14 @@ def process_task_configs(commit, configs):
         result = {
             'task_id': config['id'],
             'task_type': config['task_type'],
+            'findings': [],
             'config': {
                 'id': config['id'],
                 'task_type': config['task_type'],
                 'options': config['options']
             },
-            'findings': [],
             'commit': {
-                "ref": commit['ref'],
+                'ref': commit['ref'],
                 'head_commit': {
                     'committer': commit['committer']
                 },
@@ -112,7 +112,7 @@ def process_task_configs(commit, configs):
         if result['findings']:
             scumblr.send_results(result)
 
-        log.info('Finished working on config. Result: {0}'.format(
+        log.warning('Finished working on config. Result: {0}'.format(
             json.dumps(result, indent=2),
         ))
 
@@ -122,7 +122,7 @@ def github_handler(event, context):
     """
     Handles the processing of Github commit events.
 
-    The general flow of processing is as follows:
+    The general flow of processing is as follows::
 
     1) Receive Github Webhook event.
     2) Validate event for SourceIp, User-Agent and HMAC digest using a pre-shared secret.
@@ -168,3 +168,71 @@ def github_handler(event, context):
             process_task_configs(commit_data, config)
 
     return {'statusCode': '200', 'body': '{}'}
+
+
+@RavenLambdaWrapper()
+def rocketci_handler(event, context):
+    """
+    Handles processing of RocketCI commit events.
+
+    The general flow of processing is as follows::
+
+    1) Receive RocketCI event.
+    2) Fetch terms from Scumblr for processing.
+    3) Fetch commit information from Stash/Bitbucket.
+    4) Fetch full file information via api.
+    5) Analyze blob with terms defined by the Scumblr configuration.
+    6) Return analysis results to Scumblr.
+
+    :param event:
+    :param context:
+    :return:
+    """
+    log.debug('Entering lambda handler with event: {}'.format(json.dumps(event, indent=2)))
+    for r in event['Records']:
+        body = json.loads(r['Sns']['Message'])
+        if body.get('eventSource') == 'stash-stable':
+            if body.get('codeEventType') == 'create_commit':
+                # get search terms from scumblr
+                log.debug('Got Message: {}'.format(json.dumps(body, indent=2)))
+                config = scumblr.get_config('GithubEventAnalyzer')  # TODO separate out terms
+                commit_data = bitbucket.request(body['source']['url'] + '/' + 'changes')
+
+                for f in commit_data['values']:
+                    file_url = bitbucket.get_file_url(f['links']['self'][0]['href'])
+                    data = bitbucket.reconstruct_contents(bitbucket.request(file_url))
+
+                    # normalize commit data
+                    commit_data['contents'] = data
+                    commit_data['contents_url'] = file_url
+                    commit_data['sha'] = body['source']['sha']
+                    commit_data['committer'] = body['source']['author']['email']
+                    commit_data['ref'] = body['source']['refId']
+                    commit_data['html_url'] = body['source']['url']
+
+                    # send to scumblr
+                    process_task_configs(commit_data, config)
+
+    return {'statusCode': '200', 'body': '{}'}
+
+
+@RavenLambdaWrapper()
+def bitbucket_handler(event, context):
+    """
+    Handles processing of bitbucket commit events.
+
+    The general flow of processing is as follows::
+
+    1) Receive Bitbucket Webhook.
+    2) Validate event for SourceIp, User-Agent and HMAC digest using a pre-shared secret.
+    3) Fetch terms from Scumblr for processing.
+    4) Fetch commit information from Stash.
+    5) Fetch full file information via the blob api.
+    6) Analyze blob with terms defined by the Scumblr configuration.
+    7) Return analysis results to Scumblr.
+
+    :param event:
+    :param context:
+    :return:
+    """
+    raise NotImplementedError
