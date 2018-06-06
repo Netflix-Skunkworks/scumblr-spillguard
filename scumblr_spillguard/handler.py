@@ -110,6 +110,7 @@ def process_task_configs(commit, configs):
             )
 
         if result['findings']:
+            log.error('Has findings. Sending result to scumblr. Result: {0}'.format(json.dumps(result, indent=2)))
             scumblr.send_results(result)
 
         log.warning('Finished working on config. Result: {0}'.format(
