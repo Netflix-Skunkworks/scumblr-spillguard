@@ -10,7 +10,7 @@ from scumblr_spillguard.secrets import get_secret
 from scumblr_spillguard.exceptions import GeneralFailure, ThrottledError, AuthorizationError
 
 
-GITHUB_CIDR_WHITELIST = ['192.30.252.0/22', '185.199.108.0/22']
+GITHUB_CIDR_WHITELIST = ['192.30.252.0/22', '185.199.108.0/22', '140.82.112.0/20']
 
 
 def github_thottled(exception):
